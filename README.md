@@ -1,31 +1,22 @@
 # How To Develop, Build, Dockerize and Run MERN Stack on Docker Compose — Typescript Version
 
-Date Added: September 21, 2023 12:09 PM
-
-<aside>
-💡 This template documents how to review code. Helpful for new and remote employees to get and stay aligned.
-
-</aside>
+Date Added: September 21, 2022 12:09 PM
 
 ## **Introduction**
 
-MERN Stack uses four technologies such as MongoDB, Express, React, and NodeJS. React is a javascript library for building web apps and it doesn’t load itself in the browser. We need some kind of mechanism that loads the **index.html** (single page) of React application with all the dependencies(CSS and js files) in the browser. In this case, we are using node as the webserver which loads React assets and accepts any API calls from the React UI app.
+The MERN stack uses four technologies: MongoDB, Express, React, and NodeJS. React is a JavaScript library for building web applications, but it does not load itself in the browser. We need some mechanism to load the React application's single-page HTML file **index.html** and all of its dependencies (CSS and JavaScript files). In this case, we use Node.js as a web server to load the React assets and accept any API calls from the React UI application.
 
 ![Untitled](md-assets/Untitled.png)
 
-If you look at the above diagram all the web requests without the **/api** will go to React routing and the React Router kicks in and loads components based on the path. All the paths that contain **/api** will be handled by the Node server itself.
+In the diagram above, all web requests without the **/api** path are routed to React, where React Router loads the appropriate component based on the path. All web requests with the **/api** path are handled by the Node server itself.
 
 ## **Example Project**
 
-Here is an example of a simple tasks application that creates, retrieves, edits, and deletes tasks. We actually run the API on the NodeJS server and you can use MongoDB to save all these tasks.
+Here is an example of a simple task application that can create, read, update, and delete (CRUD) tasks. We run the API on a Node.js server, and you can use MongoDB to store all of the tasks.
 
-![1_JN0njPe-UZ16utRelcQn5w.gif](md-assets/1_JN0njPe-UZ16utRelcQn5w.gif)
+![1_JN0njPe-UZ16utRelcQn5w.gif](md-assets/new.png)
 
-As you add users we are making an API call to the nodejs server to store them and get the same data from the server when we retrieve them. You can see network calls in the following video.
-
-![1_j7EWjQuwx76WTOILWDvXHQ.gif](md-assets/1_j7EWjQuwx76WTOILWDvXHQ.gif)
-
-Here is a Github link to this project. You can clone it and run it on your machine.
+Use the following GitHub link to clone this project to your machine and run it:
 
 ```bash
 // clone the project
@@ -42,27 +33,99 @@ npm run dev
 
 ## **Project Structure**
 
-Let’s understand the project structure for this project. We will have two package.json: one for the **React** and another for **nodejs API**. It’s always best practice to have completely different node_modules for each one. In this way, you won’t get merging issues or any other problems regarding web and server node modules collision. It’s easier to convert your MERN Stack into any other stack later such as replacing the API code with microservices and serving your UI through NGINX web server.
+Let's understand the project structure. We will have two package.json files: one for the React application and one for the Node.js API. It is always best practice to have separate node_modules folders for each application. This will prevent merging issues and other problems caused by collisions between web and server node modules. It also makes it easier to convert your MERN stack to another stack later, such as replacing the API code with microservices and serving your UI through an NGINX web server.
 
 **Project Structure**
 
-![Untitled](md-assets/Untitled%201.png)
+```
+devops-training-mern-stack-typescript
+├─ .DS_Store
+├─ Dockerfile
+├─ docker-compose.yaml
+├─ README.md
+├─ api
+│  ├─ .DS_Store
+│  ├─ .env
+│  ├─ .env-example
+│  ├─ Dockerfile.dev
+│  ├─ README.md
+│  ├─ app.ts
+│  ├─ config
+│  │  └─ db.config.ts
+│  ├─ controller
+│  │  └─ task.controller.ts
+│  ├─ gulpfile.js
+│  ├─ index.ts
+│  ├─ logger
+│  │  └─ api.logger.ts
+│  ├─ model
+│  │  └─ task.model.ts
+│  ├─ nodemon.json
+│  ├─ package-lock.json
+│  ├─ package.json
+│  ├─ repository
+│  │  └─ task.repository.ts
+│  ├─ service
+│  │  └─ task.service.ts
+│  ├─ src
+│  ├─ swagger
+│  │  ├─ swagger.css
+│  │  └─ swagger.json
+│  ├─ tsconfig.json
+│  └─ webpack.config.ts
+└─ ui
+   ├─ .DS_Store
+   ├─ Dockerfile.dev
+   ├─ README.md
+   ├─ package-lock.json
+   ├─ package.json
+   ├─ public
+   │  ├─ favicon.ico
+   │  ├─ index.html
+   │  ├─ logo192.png
+   │  ├─ logo512.png
+   │  ├─ manifest.json
+   │  └─ robots.txt
+   ├─ src
+   │  ├─ .DS_Store
+   │  ├─ App.css
+   │  ├─ App.test.tsx
+   │  ├─ App.tsx
+   │  ├─ checklist.png
+   │  ├─ components
+   │  │  ├─ CreateTask.tsx
+   │  │  ├─ EditTaskModal.tsx
+   │  │  ├─ Header.tsx
+   │  │  ├─ Home.tsx
+   │  │  └─ Tasks.tsx
+   │  ├─ index.css
+   │  ├─ index.tsx
+   │  ├─ logo.svg
+   │  ├─ react-app-env.d.ts
+   │  ├─ reportWebVitals.ts
+   │  ├─ services
+   │  │  └─ TaskService.ts
+   │  ├─ setupProxy.ts
+   │  └─ setupTests.ts
+   └─ tsconfig.json
 
-If you look at the above project structure, all the React app resides under the **ui** folder and nodejs API resides under the **api** folder.
+```
+
+The React application is located in the **ui** folder, and the Node.js API is located in the **api** folder.
 
 ## ****Set up a MongoDB Atlas****
 
-The core of MongoDB Cloud is [MongoDB Atlas](https://www.mongodb.com/cloud/atlas), a fully managed cloud database for modern applications. Atlas is the best way to run MongoDB, the leading modern database.
+[MongoDB Atlas](https://www.mongodb.com/cloud/atlas), a fully managed cloud database for modern applications, is at the core of MongoDB Cloud. Atlas is the best way to run MongoDB, the leading modern database.
 
-[Let’s create your MongoDB Account here](https://account.mongodb.com/account/login). You can either log in with any of your Gmail accounts or you can provide any other email address to create the account.
+[Create your MongoDB Account here:](https://account.mongodb.com/account/login). You can log in with any of your Gmail accounts, or you can provide any other email address to create the account.
 
 ![Untitled](md-assets/Untitled%202.png)
 
-Once you log in with your account you will see the dashboard below where you can create clusters.
+After logging in with your account, you will see the dashboard below, where you can create clusters.
 
 ![Untitled](md-assets/Untitled%203.png)
 
-Let’s create a cluster called todo-cluster by clicking on the build a cluster and selecting all the details below.
+To create a cluster named **todo-cluster**, click Build a cluster and select all of the following details:
 
 ![Untitled](md-assets/Untitled%204.png)
 
@@ -500,7 +563,7 @@ export const disconnect = () => {
 
 Once you create the separate folder for React code you need to start with the following command to scaffold the React structure with the help of React CLI. We will not build the entire app here instead we will go through important points here. You can clone the entire GitHub Repo and check the whole app.
 
-![Untitled](md-assets/Untitled%2018.png)
+![Untitled](md-assets/new.png)
 
 ## ****Dockerize MERN Stack****
 
